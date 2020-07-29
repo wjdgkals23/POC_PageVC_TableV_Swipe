@@ -55,19 +55,12 @@ class ViewController2: UIViewController {
                                                    attribute: .trailing, multiplier: 1.0, constant: 0))
     }
     
+    // gesture를
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if let pageController = parent as? UIPageViewController {
-            let gestureRecognizer = UIPanGestureRecognizer(target: self, action: nil)
-            gestureRecognizer.delaysTouchesBegan = true
-            gestureRecognizer.cancelsTouchesInView = false
-            gestureRecognizer.delegate = self
-            tableView.addGestureRecognizer(gestureRecognizer)
-
-            pageController.swipeScrollView?.canCancelContentTouches = false
-            pageController.swipeScrollView?.panGestureRecognizer.require(toFail: gestureRecognizer)
-        }
     }
+    
+    // 끊어져있어야해 -> panGesture를 얻어올거야
 }
 
 extension ViewController2: UIGestureRecognizerDelegate {
@@ -87,6 +80,14 @@ extension ViewController2: UIGestureRecognizerDelegate {
                            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return otherGestureRecognizer.view == tableView
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touch began")
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touch moved")
+    }
 }
 
 extension ViewController2: UITableViewDataSource, UITableViewDelegate {
@@ -96,6 +97,14 @@ extension ViewController2: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as UITableViewCell
+        
+        if let pageController = parent as? UIPageViewController {
+            let gestureRecognizer = UIPanGestureRecognizer(target: self, action: nil)
+            gestureRecognizer.delaysTouchesBegan = true
+            gestureRecognizer.cancelsTouchesInView = false
+            gestureRecognizer.delegate = self
+            cell.addGestureRecognizer(gestureRecognizer)
+        }
         
         cell.textLabel?.text = items[indexPath.row]
         
